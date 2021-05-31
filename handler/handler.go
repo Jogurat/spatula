@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/go-chi/chi"
 	"test.com/test/model"
@@ -13,7 +14,7 @@ import (
 
 func HandleTwitter(w http.ResponseWriter, r *http.Request) {
 	username := chi.URLParam(r, "username")
-
+	username = strings.ToLower(username)
 	profile, err := postgres.CheckCache(username, "twitter")
 	if err != nil {
 		// There is nothing in the cache, grab user info from scraper & store in DB
@@ -22,7 +23,7 @@ func HandleTwitter(w http.ResponseWriter, r *http.Request) {
 			fmt.Println("ETO ME U ERR")
 
 			newProfile := scraper.GetTwitterProfile(username)
-			profileForInsert := &model.Profile{Username: newProfile.Username, FollowersCount: newProfile.FollowersCount, PostsCount: newProfile.TweetsCount}
+			profileForInsert := &model.Profile{Username: username, FollowersCount: newProfile.FollowersCount, PostsCount: newProfile.TweetsCount}
 			postgres.InsertProfile(profileForInsert, "twitter")
 			profile = profileForInsert
 		}
@@ -34,6 +35,7 @@ func HandleTwitter(w http.ResponseWriter, r *http.Request) {
 
 func HandleTiktok(w http.ResponseWriter, r *http.Request) {
 	username := chi.URLParam(r, "username")
+	username = strings.ToLower(username)
 	profile, err := postgres.CheckCache(username, "tiktok")
 	if err != nil {
 		// There is nothing in the cache, grab user info from scraper & store in DB
