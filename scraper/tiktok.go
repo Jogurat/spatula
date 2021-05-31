@@ -2,6 +2,7 @@ package scraper
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 	"os"
@@ -29,5 +30,9 @@ func GetTiktokProfile(username string) *model.Profile {
 	fmt.Println(respBody.Stats.FollowersCount)
 	profile := &model.Profile{Username: username,
 		FollowersCount: respBody.Stats.FollowersCount, PostsCount: respBody.Stats.PostsCount}
+	if profile.FollowersCount == 0 && profile.PostsCount == 0 {
+		fmt.Println("No data")
+		panic(errors.New("No user found"))
+	}
 	return profile
 }
