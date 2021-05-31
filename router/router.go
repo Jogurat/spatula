@@ -17,5 +17,6 @@ func InitRouter() *chi.Mux {
 
 	// Bind routes
 	r.Get("/twitter/{username}", handler.HandleTwitter)
+	r.Get("/tiktok/{username}", handler.HandleTiktok)
 	return r
 }

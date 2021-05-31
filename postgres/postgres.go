@@ -24,12 +24,24 @@ func GetDB() *pgxpool.Pool {
 	return dbPool
 }
 
-func CheckCache(username string) (*model.Profile, error) {
+func InsertProfile(profile *model.Profile, socialNetwork string) error {
+	dbConn := GetDB()
+	sqlString := "INSERT INTO " + socialNetwork + " (username, followers_count, posts_count) VALUES($1, $2, $3)"
+	_, err := dbConn.Exec(context.Background(), sqlString, profile.Username,
+		profile.FollowersCount, profile.PostsCount)
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+	return nil
+}
+
+func CheckCache(username string, socialNetwork string) (*model.Profile, error) {
 	dbConn := GetDB()
 	var followersCount, postsCount int
 	var updatedAt time.Time
-	rows, err := dbConn.Query(context.Background(),
-		"SELECT followers_count, posts_count, updated_at FROM twitter WHERE username=$1", username)
+	sqlString := "SELECT followers_count, posts_count, updated_at FROM " + socialNetwork + " WHERE username=$1"
+	rows, err := dbConn.Query(context.Background(), sqlString, username)
 	//.Scan(&followersCount, &postsCount)
 	if err != nil {
 		// Handle DB err
