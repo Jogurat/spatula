@@ -1,0 +1,35 @@
+version: "3.1"
+
+services:
+  db:
+    image: jogurat/db-test
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      PGDATA: /var/postgres/data
+    ports:
+      - 1112:5432
+    volumes:
+      - mydb:/var/postgres/data
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 1111:8080
+
+  node:
+    image: jogurat/spatula-node
+
+  spatula:
+    image: jogurat/spatula-go
+    environment:
+      NODE_URL: ${NODE_URL}
+      DATABASE_URL: ${DATABASE_URL}
+    ports:
+      - 1313:3000
+    depends_on:
+      - "db"
+
+volumes:
+  mydb:

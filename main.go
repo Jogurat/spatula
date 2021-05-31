@@ -12,5 +12,5 @@ func main() {
 
 	router := router.InitRouter()
 
-	http.ListenAndServe("localhost:3000", router)
+	http.ListenAndServe(":3000", router)
 }
