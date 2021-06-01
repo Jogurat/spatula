@@ -63,6 +63,11 @@ func CheckCache(username string, socialNetwork string) (*model.Profile, error) {
 		err = rows.Scan(&followersCount, &postsCount, &updatedAt)
 		rowsReturned++
 	}
+	if rowsReturned == 0 {
+		// No items in cache, get from twitter scraper instead
+		fmt.Println("Nothing stored in cache")
+		return nil, errors.New("Nothing stored in cache")
+	}
 	// Check if the cache is older than delta minutes
 	delta := 10
 	validCacheTime := time.Now().Add(time.Duration(-delta) * time.Minute)
@@ -71,11 +76,6 @@ func CheckCache(username string, socialNetwork string) (*model.Profile, error) {
 		fmt.Println("Cache is too stale")
 		return nil, errors.New("Cache too stale")
 
-	}
-	if rowsReturned == 0 {
-		// No items in cache, get from twitter scraper instead
-		fmt.Println("Nothing stored in cache")
-		return nil, errors.New("Nothing stored in cache")
 	}
 	profile := &model.Profile{Username: username, FollowersCount: followersCount, PostsCount: postsCount, UpdatedAt: updatedAt}
 	return profile, nil
