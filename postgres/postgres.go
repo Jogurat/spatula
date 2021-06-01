@@ -63,6 +63,7 @@ func CheckCache(username string, socialNetwork string) (*model.Profile, error) {
 		err = rows.Scan(&followersCount, &postsCount, &updatedAt)
 		rowsReturned++
 	}
+	fmt.Println("Rows returned: ", rowsReturned)
 	if rowsReturned == 0 {
 		// No items in cache, get from twitter scraper instead
 		fmt.Println("Nothing stored in cache")
