@@ -19,6 +19,7 @@ type TiktokResponse struct {
 
 func GetTiktokProfile(username string) *model.Profile {
 	nodeUrl := os.Getenv("NODE_URL") + "/" + username
+	// Get user from Node backend
 	resp, err := http.Get(nodeUrl)
 	if err != nil {
 		fmt.Println("Error getting tiktok user: ")

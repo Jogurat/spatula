@@ -23,8 +23,8 @@ func HandleTwitter(w http.ResponseWriter, r *http.Request) {
 	username = strings.ToLower(username)
 	profile, err := postgres.CheckCache(username, "twitter")
 	if err != nil {
-		// There is nothing in the cache, grab user info from scraper & store in DB
 		if err.Error() == "Nothing stored in cache" {
+			// There is nothing in the cache, grab user info from scraper & store in DB
 			profileForInsert := NewTwitterProfile(username)
 			postgres.InsertProfile(profileForInsert, "twitter")
 			profile = profileForInsert
@@ -33,6 +33,9 @@ func HandleTwitter(w http.ResponseWriter, r *http.Request) {
 			profileForUpdate := NewTwitterProfile(username)
 			postgres.UpdateProfile(profileForUpdate, "twitter")
 			profile = profileForUpdate
+		} else {
+			// Unknown error
+			panic(err)
 		}
 	}
 	profileJson, _ := json.Marshal(*profile)
@@ -51,9 +54,10 @@ func HandleTiktok(w http.ResponseWriter, r *http.Request) {
 	username = strings.ToLower(username)
 	profile, err := postgres.CheckCache(username, "tiktok")
 	if err != nil {
-		// There is nothing in the cache, grab user info from scraper & store in DB
 		fmt.Println("Error in tiktok handler: ", err)
 		if err.Error() == "Nothing stored in cache" {
+			// There is nothing in the cache, grab user info from scraper & store in DB
+
 			profileForInsert := NewTiktokProfile(username)
 			postgres.InsertProfile(profileForInsert, "tiktok")
 			profile = profileForInsert

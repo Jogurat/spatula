@@ -54,7 +54,6 @@ func CheckCache(username string, socialNetwork string) (*model.Profile, error) {
 	var updatedAt time.Time
 	sqlString := "SELECT followers_count, posts_count, updated_at FROM " + socialNetwork + " WHERE username=$1"
 	rows, err := dbConn.Query(context.Background(), sqlString, username)
-	//.Scan(&followersCount, &postsCount)
 	if err != nil {
 		// Handle DB err
 		return nil, err
