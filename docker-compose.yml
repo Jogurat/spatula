@@ -22,7 +22,7 @@ services:
     image: jogurat/spatula-node
 
   spatula:
-    image: jogurat/spatula-go
+    image: jogurat/spatula
     environment:
       NODE_URL: ${NODE_URL}
       DATABASE_URL: ${DATABASE_URL}

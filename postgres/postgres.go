@@ -36,6 +36,18 @@ func InsertProfile(profile *model.Profile, socialNetwork string) error {
 	return nil
 }
 
+func UpdateProfile(profile *model.Profile, socialNetwork string) error {
+	dbConn := GetDB()
+	sqlString := "UPDATE " + socialNetwork + " SET followers_count=$1, posts_count=$2 WHERE username=$3"
+	_, err := dbConn.Exec(context.Background(), sqlString,
+		profile.FollowersCount, profile.PostsCount, profile.Username)
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+	return nil
+}
+
 func CheckCache(username string, socialNetwork string) (*model.Profile, error) {
 	dbConn := GetDB()
 	var followersCount, postsCount int
@@ -52,10 +64,18 @@ func CheckCache(username string, socialNetwork string) (*model.Profile, error) {
 		err = rows.Scan(&followersCount, &postsCount, &updatedAt)
 		rowsReturned++
 	}
-	if rowsReturned == 0 { /* or updated_at field is too stale */
+	// Check if the cache is older than delta minutes
+	delta := 10
+	validCacheTime := time.Now().Add(time.Duration(-delta) * time.Minute)
+	if updatedAt.Before(validCacheTime) {
+		// The cache is too stale, we need to update the DB entry
+		fmt.Println("Cache is too stale")
+		return nil, errors.New("Cache too stale")
+
+	}
+	if rowsReturned == 0 {
 		// No items in cache, get from twitter scraper instead
-		fmt.Println("Nemam u kesu nista brabo")
-		// log.Infof(context.Background(), "Nemam u kesu nista brabo")
+		fmt.Println("Nothing stored in cache")
 		return nil, errors.New("Nothing stored in cache")
 	}
 	profile := &model.Profile{Username: username, FollowersCount: followersCount, PostsCount: postsCount, UpdatedAt: updatedAt}
