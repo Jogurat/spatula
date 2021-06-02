@@ -5,6 +5,7 @@ info:
   version: "0.1"
 servers:
   - url: "http://188.166.85.199:1313"
+  - url: "http://localhost:1313"
 paths:
   /{socialNetwork}/{username}:
     get:
