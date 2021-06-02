@@ -1,0 +1,53 @@
+openapi: 3.0.1
+info:
+  title: Spatula web scraper
+  description: defaultDescription
+  version: "0.1"
+servers:
+  - url: "http://188.166.85.199:1313"
+paths:
+  /{socialNetwork}/{username}:
+    get:
+      description: Gets the number of followers and posts for the given username on the given platform
+      parameters:
+        - name: username
+          in: path
+          description: Username to search
+          required: true
+          schema:
+            type: string
+        - name: socialNetwork
+          in: path
+          description: Social network to be searched
+          required: true
+          schema:
+            type: string
+            enum:
+              - twitter
+              - tiktok
+      responses:
+        "200":
+          description: The user object
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  postsCount:
+                    type: integer
+                  followersCount:
+                    type: integer
+                  username:
+                    type: string
+                  updatedAt:
+                    type: string
+              examples:
+                "0":
+                  value: >-
+                    {"username":"poki","followersCount":5300000,"postsCount":128,"updatedAt":"2021-06-01T21:47:51.739044Z"}
+        "500":
+          description: Error
+      servers:
+        - url: "http://188.166.85.199:1313"
+    servers:
+      - url: "http://188.166.85.199:1313"
