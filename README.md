@@ -32,6 +32,9 @@ Start by entering the username of the user you want to check the stats of, and p
 
 ![Spatula Search](https://i.imgur.com/1LMT10U.png)
 
+It is sorta responsive too! Yay 😎. Here's the Twitter profile of Serbia's President 🥪
+![Spatula Responsive](https://i.imgur.com/EbqacRi.jpg)
+
 ### Swagger
 
 On [localhost:1414](http://localhost:1414) you can find the Swagger API explorer
